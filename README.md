@@ -1,2 +1,2 @@
-# MotoTrak_V1.2
-MotoTrak Behavioral Program Version 1.2, MATLAB-based
+# MotoTrak V1
+Version 1 of the MotoTrak Behavioral Program, written in MATLAB.
