@@ -1,6 +1,6 @@
-function MotoTrak_v1_26
+function MotoTrak_v1_27
 
-%Compiled: 04/26/2022, 15:19:22
+%Compiled: 04/26/2022, 22:41:44
 
 MotoTrak_Startup;                                                           %Call the startup function.
 
@@ -113,22 +113,22 @@ MotoTrak_Disable_All_Uicontrols(handles.mainfig);                           %Dis
 if ~isfield(handles,'ardy')                                                 %If the Arduino isn't already connected in a pre-existing handles structure...
     handles.ardy = Connect_MotoTrak('listbox',handles.msgbox,...
         'useserialport',use_serialport);                                    %Connect to the Arduino, passing the listbox handle and the use_serialport flag. 
-%     if ~isempty(handles.ardy) && handles.ardy.version < 230                 %If the Arduino sketch version is older than version 2.3...
-%         str = sprintf(['The controller''s V%1.1f microcode is out of '...
-%             'date.'],handles.ardy.version/100);                             %Create a string showing the current microcode version.
-%         Add_Msg(handles.msgbox,str);                                        %Show the string in the messagebox.
-%         delete(handles.ardy.serialcon);                                     %Close the serial connection with the Arduino.
-%         try                                                                 %Attempt to run the program.
-%             MotoTrak_Upload_Controller_Sketch(handles.ardy.port,...
-%                 handles.version, handles.msgbox);                           %Call the function to upload a sketch to the controller.
-%         catch err                                                           %If any error occurs...
-%             txt = MotoTrak_Save_Error_Report(handles,err);                  %Save a copy of the error in the AppData folder.
-%             MotoTrak_Send_Error_Report(handles,handles.err_rcpt,txt);       %Send an error report to the specified recipient.        
-%         end
-%         Add_Msg(handles.msgbox,'Reconnecting...');                          %Show the string in the messagebox.
-%         handles.ardy = Connect_MotoTrak('listbox',handles.msgbox,...
-%             'useserialport',use_serialport);                                %Connect to the Arduino, passing the listbox handle and the use_serialport flag. 
-%     end
+    if ~isempty(handles.ardy) && handles.ardy.version < 240                 %If the Arduino sketch version is older than version 2.4...
+        str = sprintf(['The controller''s V%1.1f microcode is out of '...
+            'date.'],handles.ardy.version/100);                             %Create a string showing the current microcode version.
+        Add_Msg(handles.msgbox,str);                                        %Show the string in the messagebox.
+        delete(handles.ardy.serialcon);                                     %Close the serial connection with the Arduino.
+        try                                                                 %Attempt to run the program.
+            MotoTrak_Upload_Controller_Sketch(handles.ardy.port,...
+                handles.version, handles.msgbox);                           %Call the function to upload a sketch to the controller.
+        catch err                                                           %If any error occurs...
+            txt = MotoTrak_Save_Error_Report(handles,err);                  %Save a copy of the error in the AppData folder.
+            MotoTrak_Send_Error_Report(handles,handles.err_rcpt,txt);       %Send an error report to the specified recipient.        
+        end
+        Add_Msg(handles.msgbox,'Reconnecting...');                          %Show the string in the messagebox.
+        handles.ardy = Connect_MotoTrak('listbox',handles.msgbox,...
+            'useserialport',use_serialport);                                %Connect to the Arduino, passing the listbox handle and the use_serialport flag. 
+    end
     if isempty(handles.ardy)                                                %If the user cancelled connection to the Arduino...
         close(handles.mainfig);                                             %Close the GUI.
         clear('run');                                                       %Clear the global run variable from the workspace.
@@ -316,8 +316,8 @@ handles.constraint = unique({handles.stage.const});                         %Lis
 handles.cur_stage = 1;                                                      %Set the current stage to the first stage in the list.
 handles = MotoTrak_Load_Stage(handles);                                     %Load the stage parameters for current stage.
 
-% %Set the streaming parameters on the Arduino.
-% MotoTrak_Set_Stream_Params(handles);                                        %Update the streaming properties on the Arduino.
+%Set the streaming parameters on the Arduino.
+MotoTrak_Set_Stream_Params(handles);                                        %Update the streaming properties on the Arduino.
 
 %Set the callbacks for all the enabled uicontrols.
 handles = MotoTrak_Set_Callbacks(handles);                                  %Set the callbacks for all uicontrols and menu options.
@@ -1151,6 +1151,7 @@ function MotoTrak_Behavior_Loop(fig)
 %       functions.
 %   12/31/2018 - Drew Sloan - Added initial water reaching module
 %       functionality.
+%   04/26/2022 - Drew Sloan - Added the option for a trigger output test.
 %
 
 global run                                                                  %Create the global run variable.
@@ -1517,13 +1518,22 @@ while fix(run) == 2                                                         %Loo
         MotoTrak_Write_Pause_Data(fid,trial);                               %Call the subfunction to write the pause data to the data file.
         trial.stim_time = [];                                               %Clear out the stimulation times buffer.    
         
-    elseif run == 2.2                                                       %Otherwise if the user manually fed the rat...
+    elseif run == 2.2                                                       %If the user manually fed the rat...
         h.ardy.trigger_feeder(1);                                           %Trigger feeding on the MotoTrak controller.
         trial.num = trial.num - 1;                                          %Subtract one from the trial counter.
         fwrite(fid,0,'uint32');                                             %Write a trial of zero.
         fwrite(fid,now,'float64');                                          %Write the current time.
         fwrite(fid,'F','uint8');                                            %Write an 'F' (70) to indicate a manual feeding.
         Add_Msg(h.msgbox,[datestr(now,13) ' - Manual Feeding.']);           %Show the user that the session has ended.
+        run = 2;                                                            %Reset the run variable to 2.
+        
+    elseif run == 2.3                                                       %If the user requested a trigger output test...
+        if isfield(h.ardy,'send_trigger')                                   %If the controller function structure has a "send_trigger" field...
+            h.ardy.send_trigger(1);                                         %Send a trigger through the "D I/O" output.
+        end
+        Add_Msg(h.msgbox,[datestr(now,13) ' - Trigger output test.']);      %Show the user that the session has ended.
+        h.ardy.trigger_feeder(1);                                           %Trigger feeding on the MotoTrak controller.
+        trial.num = trial.num - 1;                                          %Subtract one from the trial counter.
         run = 2;                                                            %Reset the run variable to 2.
     end
     
@@ -3610,7 +3620,7 @@ end
 set(handles.menu.stages.h,'enable','on');                                   %Enable the stages menu.
 set(handles.menu.stages.view_spreadsheet,'enable','on');                    %Enable the "Open Spreadsheet" menu option.
 set(handles.menu.stages.set_load_option,'enable','on');                     %Enable the stage-loading selection.
-set(handles.menu.pref.h,'enable','on');                                     %Enable the preferences menu.
+
 set(handles.menu.cal.h,'enable','on');                                      %Enable the calibration menu.
 switch handles.device                                                       %Switch between the available MotoTrak devices...
     case {'pull','both','touch'}                                            %If the current device is the pull...
@@ -3620,6 +3630,19 @@ switch handles.device                                                       %Swi
         set(handles.menu.cal.reset_baseline,'enable','on');                 %Enable "Reset Baseline" selection.
     case 'lever'                                                            %If the current device is the lever...
         set(handles.menu.cal.open_calibration,'enable','on');               %Enable "Open Calibration" selection.
+end
+
+set(handles.menu.pref.h,'enable','on');                                     %Enable the preferences menu.
+
+set(handles.menu.io.h,'enable','on');                                       %Enable the i/o menu.
+set(handles.menu.io.dio_trig_out,'enable','off');                           %Disable the trigger output type submenu.
+set(handles.menu.io.dio_trig_dur,'enable','off');                           %Disable the trigger duration menu option.
+set(handles.menu.io.dio_trig_ipp,'enable','off');                           %Disable the random trigger interval menu option.
+if all(isfield(handles.ardy,{'set_trig_index','get_trig_dur'}))             %If the controller function structure has an option to grab the trigger duration...
+    handles.ardy.set_trig_index(1);                                         %Set the trigger index to 1.
+    trig_dur = handles.ardy.get_trig_dur();                                 %Grab the trigger duration.
+    str = sprintf('Trigger Duration: %1.0f ms',trig_dur);                   %Create a string showing the trigger duration.
+    set(handles.menu.io.dio_trig_dur,'Text',str);                           %Update the text on the trigger duration menu option.
 end
 
 
@@ -3663,6 +3686,8 @@ function [device, index] = MotoTrak_Identify_Device(val)
 %   
 %   UPDATE LOG:
 %   12/31/2018 - Drew Sloan - Added the water reaching module.
+%   04/26/2022 - Drew Sloan - Lowered the pull module lower bound from 500
+%       to 495 to prevent misidentification of pull modules.
 %
 
 if val < 20                                                                 %If the device-identifier value is less than ~0.1V...
@@ -3680,10 +3705,10 @@ elseif val >= 200 && val < 300                                              %If 
 elseif val >= 300 && val < 400                                              %If the device-identifier value is between ~1.5V and ~2.0V...
     device = 'knob';                                                        %The device is the knob (200 kOhm resistor).
     index = 2;                                                              %Set the index to 2.
-elseif val >= 400 && val < 500                                              %If the device-identifier value is between ~2.0V and ~2.5V...
+elseif val >= 400 && val < 495                                              %If the device-identifier value is between ~2.0V and ~2.5V...
     device = 'lever';                                                       %The device is the pull (130 kOhm resistor).
     index = 5;                                                              %Set the index to 1.
-elseif val >= 500 && val < 600                                              %If the device-identifier value is between ~2.5V and ~3.0V...
+elseif val >= 495 && val < 600                                              %If the device-identifier value is between ~2.5V and ~3.0V...
     device = 'pull';                                                        %The device is the pull (85 kOhm resistor).
     index = 6;                                                              %Set the index to 6.
 elseif val >= 600 && val < 700                                              %If the device-identifier value is between ~3.0V and ~3.5V...
@@ -3726,6 +3751,7 @@ function MotoTrak_Idle(fig)
 %       feeding triggers can be delivered during idle.
 %   12/31/2018 - Drew Sloan - Added plot handling for the water reaching
 %       module.
+%   04/26/2022 - Drew Sloan - Added the option for a trigger output test.
 %
 
 global run                                                                  %Create the global run variable.
@@ -3881,6 +3907,15 @@ while fix(run) == 1                                                         %Loo
                 handles.stage(handles.cur_stage).tones_enabled == 1         %If tones are enabled for this stage...
             MotoTrak_Set_Tone_Parameters(handles);                          %Call the function to update the tone parameters.
         end
+        run = 1;                                                            %Set the run variable back to 1.
+    end
+    
+    if run == 1.5                                                           %If the user selected the "Send Test Trigger" menu option....  
+        if isfield(handles.ardy,'send_trigger')                             %If the controller function structure has a "send_trigger" field...
+            handles.ardy.send_trigger(1);                                   %Send a trigger through the "D I/O" output.
+        end
+        Add_Msg(handles.msgbox,...
+            [datestr(now,13) ' - Trigger output test.']);                   %Show the user that the session has ended.
         run = 1;                                                            %Set the run variable back to 1.
     end
     
@@ -5037,22 +5072,23 @@ end
 temp = {h.stage.description};                                               %Make a cell array holding the stage descriptions.
 set(h.popstage,'string',temp,'value',h.cur_stage);                          %Populate the stage selection listbox and set its value.
 
-if strcmpi(h.stage(h.cur_stage).stim,'ON')                                   %If VNS is enabled by default for this stage...
-    h.stim = 1;                                                              %Set the VNS field to 1.
-    set(h.popvns,'value',1);                                                %Show that VNS is enabled in the VNS pop-up menu.
-    set(h.popvns,'foregroundcolor',[1 0 0]);                                %Make the VNS pop-up menu "ON" text red.
-elseif strcmpi(h.stage(h.cur_stage).stim,'RANDOM')                           %Otherwise, if VNS is randomly-presented by default for this stage...
-    h.stim = 2;                                                              %Set the VNS field to 0.
-    set(h.popvns,'value',3);                                                %Show that VNS is randomly-presented in the VNS pop-up menu.
-    set(h.popvns,'foregroundcolor',[0 0 1]);                                %Make the VNS pop-up menu "RANDOM" text blue.
-elseif strcmpi(h.stage(h.cur_stage).stim,'BURST')                            %Otherwise, if VNS is burst mode
-    h.stim = 3;                                                              %Set the VNS field to 3
-    set(h.popvns,'value',4);                                                %Show that the VNS is in burst mode in the VNS pop-up menu.
-    set(h.popvns,'foregroundcolor',[0 1 0]);                                %Make the VNS pop-up menu "BURST" text green.
-else                                                                        %Otherwise, if VNS is disabled by default for this stage...
-    h.stim = 0;                                                              %Set the VNS field to 0.
-    set(h.popvns,'value',2);                                                %Show that VNS is enabled in the VNS pop-up menu.
-    set(h.popvns,'foregroundcolor','k');                                    %Make the VNS pop-up menu "OFF" text black.
+switch lower(h.stage(h.cur_stage).stim)                                     %Switch between the different output trigger types.
+    case {'on','hit'}                                                       %If the trigger type is "ON" or "HIT"...
+        h.stim = 1;                                                         %Set the stim field to 1.
+        set(h.popvns,'value',3);                                            %Show that stimulation triggers will be sent on hits in the pop-up menu.
+        set(h.popvns,'foregroundcolor',[1 0 0]);                            %Make the stimulation triggers pop-up menu "ON" text red.
+    case 'random'                                                           %If triggers are randomly-presented by default for this stage...
+        h.stim = 2;                                                         %Set the stim field to 0.
+        set(h.popvns,'value',4);                                            %Show that stimulation triggers will be randomly send in the  pop-up menu.
+        set(h.popvns,'foregroundcolor',[0 0 1]);                            %Make the stimulation triggers pop-up menu "RANDOM" text blue.
+    case {'burst','initiation'}                                             %If the trigger type is "BURST" or "INITIATION"...
+        h.stim = 3;                                                         %Set the stim field to 3
+        set(h.popvns,'value',2);                                            %Show that the stimulation triggers will be sent on trial initiation in the pop-up menu.
+        set(h.popvns,'foregroundcolor',[0 1 0]);                            %Make the stimulation triggers pop-up menu "BURST" text green.
+    otherwise                                                               %Otherwise, if triggers are disabled by default for this stage...
+        h.stim = 0;                                                         %Set the stim field to 0.
+        set(h.popvns,'value',1);                                                %Show that stimulation triggers is enabled in the stimulation triggers pop-up menu.
+        set(h.popvns,'foregroundcolor','k');                                    %Make the stimulation triggers pop-up menu "OFF" text black.
 end
 
 if h.ardy.version >= 200                                                    %If the controller sketch version is 2.00 or newer...
@@ -5081,9 +5117,11 @@ function MotoTrak_Main_Loop(fig)
 %           - run = 1.2 >> Create the new plot varibles.
 %           - run = 1.3 >> Manual feed.
 %           - run = 1.4 >> Reset Baseline.
+%           - run = 1.5 >> Send a test trigger through the "D I/O" output.
 %       - run = 2 >> Behavior session.
 %           - run = 2.1 >> Pause session.
 %           - run = 2.2 >> Manual feed.
+%           - run = 2.3 >> Send a test trigger through the "D I/O" output.
 %       - run = 3 >> Full device calibration.
 %           = run = 3.1 >> Measure the maximum and minimum of the potentiometer signal (lever).
 %           - run = 3.1000 to 3.1999 >> Measure specified weight (isometric pull).
@@ -5098,6 +5136,8 @@ function MotoTrak_Main_Loop(fig)
 %       idle mode function.
 %   01/04/2019 - Drew Sloan - Updated the above documentation to include
 %       run states for lever module calibration.
+%   04/26/2022 - Drew Sloan - Added a run variable value for sending test
+%       triggers on the "D I/O" output.
 %
 
 global run                                                                  %Create the global run variable.
@@ -5144,6 +5184,8 @@ function handles = MotoTrak_Make_GUI(handles)
 %   10/27/2016 - Drew Sloan - Changed the axes panel to a tab group.
 %   01/09/2017 - Drew Sloan - Added a section at the end to normalize units
 %       for all figure objects to fix bugs with the figure resize function.
+%   04/26/2022 - Drew Sloan - Added an "I/O" menu to give users more
+%       control over trigger outputs from the BNC.
 %
 
 %% Set the common properties of subsequent uicontrols.
@@ -5235,6 +5277,38 @@ handles.menu.pref.config_dir = uimenu(handles.menu.pref.h,...
     'separator','on');                                                      %Create a submenu option for opening the configuration files directory.
 
 %% Create a help menu at the top of the figure.
+handles.menu.io.h = uimenu(handles.mainfig,'label','I/O');                  %Create an input/output menu at the top of the MotoTrak figure.
+handles.menu.io.dio_trig_out = uimenu(handles.menu.io.h,...
+    'label','D I/O Trigger Output',...
+    'enable','on');                                                         %Create a submenu option for setting the trigger type.
+handles.menu.io.dio_trig_off = uimenu(handles.menu.io.dio_trig_out,...
+    'label','Off',...
+    'enable','on',...
+    'checked','on');                                                        %Create a sub-submenu option for turning off the trigger outputs.
+handles.menu.io.dio_trig_init = uimenu(handles.menu.io.dio_trig_out,...
+    'label','On Trial Initiation',...
+    'enable','on',...
+    'checked','off');                                                       %Create a sub-submenu option for sending a trigger on trial initiation.
+handles.menu.io.dio_trig_hit = uimenu(handles.menu.io.dio_trig_out,...
+    'label','On Hit',...
+    'enable','on',...
+    'checked','off');                                                       %Create a sub-submenu option for sending a trigger on hits.
+handles.menu.io.dio_trig_random = uimenu(handles.menu.io.dio_trig_out,...
+    'label','Random',...
+    'enable','off',...
+    'checked','off');                                                       %Create a sub-submenu option for random ly sending a trigger.
+handles.menu.io.dio_trig_dur = uimenu(handles.menu.io.h,...
+    'label','Trigger Duration: X ms',...
+    'enable','on');                                                         %Create a submenu option for setting the trigger duration.
+handles.menu.io.dio_trig_ipp = uimenu(handles.menu.io.h,...
+    'label','Random Interval: 5 ± 2 s',...
+    'enable','off');                                                        %Create a submenu option for setting the random trigger interval.
+handles.menu.io.dio_send_test = uimenu(handles.menu.io.h,...
+    'label','Send Test Trigger',...
+    'enable','on');                                                         %Create a submenu option for sending a test trigger.
+
+
+%% Create a help menu at the top of the figure.
 handles.menu.help.h = uimenu(handles.mainfig,'label','Help');               %Create a preferences menu at the top of the MotoTrak figure.
 handles.menu.help.setup_guide = uimenu(handles.menu.help.h,...
     'label','Hardware Setup Guide',...
@@ -5274,8 +5348,8 @@ end
 set(handles.editport,'enable','inactive');                                  %Disable the port editbox.
 set(handles.popdevice,'style','popup');                                     %Make the device uicontrol a popup menu.
 set(handles.popvns,'style','popup',...
-    'string',{'ON','OFF'},...
-    'value',2);                                                             %Make the VNS uicontrol a popup menu.
+    'string',{'OFF','INITIATION','HIT','RANDOM'},...
+    'value',1);                                                             %Make the VNS uicontrol a popup menu.
 h = fliplr({'popconst','popstage','editpos','edithitwin','editthresh',...
     'editinit'});                                                           %Create the uicontrol handles field names for session information uicontrols
 l = fliplr({'Constraint:','Stage:','Position:','Hit Window:',...
@@ -7364,6 +7438,7 @@ function handles = MotoTrak_Set_Callbacks(handles)
 %   01/09/2017 - Drew Sloan - Updated global run variable values.
 %   02/21/2017 - Drew Sloan - Added a callback for opening the error report
 %       directory from the preferences menu.
+%   04/26/2022 - Drew Sloan - Added callbacks for the "I/O" menu.
 %
 
 
@@ -7379,6 +7454,10 @@ set(handles.mainfig,'CloseRequestFcn','global run; run = 0;');              %Set
 %Set the uimenu callbacks.
 set(handles.menu.stages.view_spreadsheet,...
     'callback',{@MotoTrak_Open_Google_Spreadsheet,handles.stage_url});      %Set the callback for the "Open Spreadsheet" submenu option.
+
+set(handles.menu.cal.open_calibration,'callback','global run; run = 3;');   %Set the callback for the the "Open Calibration" option.
+set(handles.menu.cal.reset_baseline,'callback','global run; run = 1.4;');   %Set the callback for the "Reset Baseline" option.
+
 set(handles.menu.pref.set_datapath,...
     'callback',@MotoTrak_Set_Datapath);                                     %Set the callback for the "Set Datapath" submenu option.
 set([handles.menu.pref.err_report_on,handles.menu.pref.err_report_off],...
@@ -7387,8 +7466,8 @@ set(handles.menu.pref.error_reports,...
     'callback',@Mototrak_Open_Error_Reports);                               %Set the callback for opening the error reports directory.
 set(handles.menu.pref.config_dir,...
     'callback',@Mototrak_Open_Configuration_Directory);                     %Set the callback for opening the configuration directory.
-set(handles.menu.cal.open_calibration,'callback','global run; run = 3;');   %Set the callback for the the "Open Calibration" option.
-set(handles.menu.cal.reset_baseline,'callback','global run; run = 1.4;');   %Set the callback for the "Reset Baseline" option.
+
+set(handles.menu.io.dio_send_test,'callback','global run; run = 1.5;');      %Set the callback for the "Send Test Trigger" submenu option.
 
 
 %% ***********************************************************************
@@ -7576,6 +7655,9 @@ set(handles.startbutton,'string','STOP',...
    'foregroundcolor',[0.5 0 0],...
    'callback','global run; run = 1;')                                       %Set the string and callback for the Start/Stop button.
 set(handles.feedbutton,'callback','global run; run = 2.2;')                 %Set the callback for the Manual Feed button.
+
+%Reset the callback for the trigger test menu option.
+set(handles.menu.io.dio_send_test,'callback','global run; run = 2.3;');     %Set the callback for the "Send Test Trigger" submenu option.
 
 %Add a tab for a hit rate plot if it doesn't already exist.
 if ~isfield(handles,'hitrate_tab')                                          %If there is no tab yet for session hit rate axes...
@@ -8190,6 +8272,84 @@ trial.peak_vals = trial.peak_vals(i);                                       %Kic
 trial.peak_indices = trial.peak_indices(i);                                 %Kick out all of the peak times outside of the hit window.
 
 trial.cur_sample = trial.cur_sample + trial.N;                                    %Add the number of new samples to the current sample counter.
+
+
+%% ***********************************************************************
+function MotoTrak_Upload_Controller_Sketch(port,ver,msgbox)
+
+%
+%MotoTrak_Upload_Controller_Sketch.m - Vulintus, Inc.
+%
+%   This function calls uploads a new sketch to the MotoTrak controller
+%   using the avrdude.exe program.
+%
+%   UPDATE LOG:
+%   04/27/2018 - Drew Sloan - First function implementation.
+%
+
+if isdeployed                                                               %If this is deployed code...
+    prog_path = 'C:\Program Files\Vulintus\MotoTrak\application';           %Set the expected path of the controller hex file program.
+else                                                                        %Otherwise, if the code isn't deployed...
+    [prog_path,~,~] = ...
+        fileparts(which('MotoTrak_Upload_Controller_Sketch.m'));            %Grab the location of the current sketch.    
+    if isempty(prog_path)                                                   %If no location was found for the current m-file...
+        temp = sprintf('%1.2f',ver);                                        %Convert the version number to a string.
+        temp(temp == '.') = 'p';                                            %Change the period to a "p";
+        temp = sprintf('MotoTrak_v%s.m',temp);                              %Construct the expected filename.
+        [prog_path,~,~] = fileparts(which(temp));                           %Check for the location of the collated MotoTrak m-file.
+    end
+end
+
+if ~exist([prog_path '\avrdude.exe'],'file') || ...
+        ~exist([prog_path '\avrdude.conf'],'file')                          %If avrdude.exe or it's configuration file aren't found...
+        warning([upper(mfilename) ':AvrdudeNotFound'],['The '...
+            '"avrdude.exe" program isn''t in the current directory!']);     %Show a warning.
+    return                                                                  %Skip execution of the function.
+end
+
+hex_files = dir([prog_path '\MotoTrak_Controller_V*.ino.hex']);             %Find all hex files in the path.
+if isempty(hex_files)                                                       %If no matching hex files were found...
+    warning([upper(mfilename) ':NoHexFilesFound'],['No MotoTrak '...
+        '*.ino.hex files files were found in the current directory!']);     %Show a warning.
+    return                                                                  %Skip execution of the function.
+end
+
+for i = 1:length(hex_files)                                                 %Step through each hex file.
+    a = find(hex_files(i).name == 'V',1,'last');                            %Find the last "V" in the filename.
+    b = strfind(hex_files(i).name,'.ino.hex');                              %Find the start of the file extension.        
+    str = hex_files(i).name(a+1:b-1);                                       %Pull the version number out of the filename.
+    str(str == '_') = '.';                                                  %Replace all underscores with periods.
+    hex_files(i).ver = str2double(str);                                     %Convert the string to a number.
+end
+i = vertcat(hex_files.ver) == max(vertcat(hex_files.ver));                  %Identify the most recent file.
+hex_files = hex_files(i);                                                   %Keep only the most recent file.
+
+str = sprintf('Updating controller microcode to V%1.1f...',...
+    hex_files(1).ver);                                                      %Create a message showing the new microcode version.
+Add_Msg(msgbox,str);                                                        %Show an "updating..." message in the messagebox.    
+
+%Build the command line call.
+cmd = ['"' prog_path '\avrdude" '...                                        %avrdude.exe location
+    '-C"' prog_path '\avrdude.conf" '...                                    %avrdude.conf location
+    '-patmega328p '...                                                      %microcontroller type
+    '-carduino '...                                                         %arduino programmer
+    '-P' port ' '...                                                        %port
+    '-b115200 '...                                                          %baud rate
+    '-D '...                                                                %disable erasing the chip
+    '-Uflash:w:"' prog_path '\' hex_files(1).name '":i'];                   %hex file name                             
+
+clc;                                                                        %Clear the command line.
+cprintf('*blue','\n%s\n',cmd);                                              %Print the command in bold green.
+[status, ~] = dos(cmd,'-echo');                                             %Execute the command in a dos prompt, showing the results.
+
+if status == 0                                                              %If the command was successful...
+    Add_Msg(msgbox,'Controller microcode successfully updated!');           %Show a success message in the messagebox.    
+else                                                                        %Otherwise...
+    Add_Msg(msgbox,'Controller microcode update failed!');                  %Show a failure message in the messagebox.    
+    Add_Msg(msgbox,'Reverting to existing controller microcode.');          %Show that we're reverting to the previous microcode.
+end
+
+pause(1);                                                                   %Pause for 1 second.
 
 
 %% ***********************************************************************
