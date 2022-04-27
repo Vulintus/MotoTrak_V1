@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="855135316" file="G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled\MotoTrak_V1_Application_Compiler.prj" location="G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled" name="MotoTrak_V1_Application_Compiler" preferred-package-location="G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled\web_installer" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="3555433941" file="G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled\MotoTrak_V1_Application_Compiler.prj" location="G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled" name="MotoTrak_V1_Application_Compiler" preferred-package-location="G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled\web_installer" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MotoTrak_V1</param.appname>
     <param.icon>${PROJECT_ROOT}\MotoTrak_V1_Application_Compiler_resources\icon.ico</param.icon>
     <param.icons>
@@ -142,6 +142,7 @@ Updated 2022-04-26, 22:42 MST.</param.help.text>
       <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Threshold.m</file>
       <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Trial_Plots.m</file>
       <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Trial_Signal.m</file>
+      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Upload_Controller_Sketch.m</file>
       <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_Config.m</file>
       <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_File_Header.m</file>
       <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_Pause_Data.m</file>
