@@ -12,7 +12,7 @@ function session = MotoTrak_Set_Stimulation_Parameters(handles,session)
 
 
 switch handles.stim                                                         %Switch between the recognized stimulation modes...
-    case 2                                                                  %If random stimulation is enabled...
+    case 'random'                                                           %If random stimulation is enabled...
         if strcmpi(handles.stage(handles.cur_stage).number,'P11')           %If the current stage is P11...
             num_stim = 180;                                                 %Set the desired total number of stimulation events.
             isi = 5;                                                        %Set the fixed ISI between all events, stimulation or catch trials.
@@ -34,7 +34,7 @@ switch handles.stim                                                         %Swi
             end
             session.rand_stim_times = now + session.rand_stim_times/86400;  %Convert the intervals to stimulation times, in units of serial date number.
         end
-    case 3                                                              	%If burst stimulation is enabled.
+    case 'burst'                                                            %If burst stimulation is enabled.
         handles.ardy.set_stim_dur(29550);                                   %Set the stimulus duration to trigger free running stimulation for 30 seconds.
         %Note:  We set this to a conservative 29550 instead of 30000 so that we
         %       don't accidentally trigger an extra pulse train at the end of
