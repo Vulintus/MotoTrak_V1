@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="3555433941" file="H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled\MotoTrak_V1_Application_Compiler.prj" location="H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled" name="MotoTrak_V1_Application_Compiler" preferred-package-location="G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled\web_installer" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="3555433941" file="H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled\MotoTrak_V1_Application_Compiler.prj" location="H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled" name="MotoTrak_V1_Application_Compiler" preferred-package-location="H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled\web_installer" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MotoTrak_V1</param.appname>
     <param.icon>${PROJECT_ROOT}\MotoTrak_V1_Application_Compiler_resources\icon.ico</param.icon>
     <param.icons>
@@ -8,19 +8,19 @@
       <file>${PROJECT_ROOT}\MotoTrak_V1_Application_Compiler_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\MotoTrak_V1_Application_Compiler_resources\icon_16.png</file>
     </param.icons>
-    <param.version>1.27</param.version>
+    <param.version>1.28</param.version>
     <param.authnamewatermark />
     <param.email>support@vulintus.com</param.email>
     <param.company>Vulintus, Inc.</param.company>
     <param.summary />
     <param.description>Vulintus' MotoTrak is a complete, modular system designed for computer-supervised training and testing of forelimb movements in rodent models.
 
-Updated 2022-12-09, 12:56 MST.</param.description>
-    <param.screenshot />
+Updated 2023-106-12, 21:39 MST.</param.description>
+    <param.screenshot>H:\My Drive\Vulintus Software (Drew)\Vulintus Icons and Splash Screens\images\MotoTrak\mototrak_main_splash_screen.png</param.screenshot>
     <param.guid />
     <param.installpath.string>\Vulintus\MotoTrak\</param.installpath.string>
     <param.installpath.combo>option.installpath.programfiles</param.installpath.combo>
-    <param.logo />
+    <param.logo>H:\My Drive\Vulintus Software (Drew)\Vulintus Icons and Splash Screens\images\MotoTrak\mototrak_install_splash_screen.png</param.logo>
     <param.install.notes />
     <param.target.install.notes />
     <param.intermediate>${PROJECT_ROOT}\for_testing</param.intermediate>
@@ -34,7 +34,7 @@ Updated 2022-12-09, 12:56 MST.</param.description>
     <param.web.mcr>true</param.web.mcr>
     <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
-    <param.web.mcr.name>MotoTrak_v1_27_Installer_win64_20221209</param.web.mcr.name>
+    <param.web.mcr.name>MotoTrak_v1_Installer_win64_20230612</param.web.mcr.name>
     <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
     <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
     <param.windows.command.prompt>true</param.windows.command.prompt>
@@ -44,22 +44,20 @@ Updated 2022-12-09, 12:56 MST.</param.description>
     <param.checkbox>false</param.checkbox>
     <param.example />
     <param.help.text>Syntax 
-	  -? 
-	 
+	 MotoTrak_V1 -? 
+	 MotoTrak_V1 varargin 
  Input Arguments 
 	 -?  print help on how to use the application 
-	 input arguments 
+	 varargin  input arguments 
  Description 
  	 Vulintus' MotoTrak is a complete, modular system designed for computer-supervised training and testing of forelimb movements in rodent models.
 
-Updated 2022-12-09, 12:56 MST.</param.help.text>
+Updated 2023-106-12, 21:39 MST.</param.help.text>
     <unset>
       <param.authnamewatermark />
       <param.summary />
-      <param.screenshot />
       <param.guid />
       <param.installpath.combo />
-      <param.logo />
       <param.install.notes />
       <param.target.install.notes />
       <param.enable.clean.build />
@@ -76,7 +74,7 @@ Updated 2022-12-09, 12:56 MST.</param.help.text>
       <param.example />
     </unset>
     <fileset.main>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Startup.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Startup.m</file>
     </fileset.main>
     <fileset.resources />
     <fileset.package>
@@ -87,83 +85,82 @@ Updated 2022-12-09, 12:56 MST.</param.help.text>
       <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Firmware Releases\MotoTrak\MotoTrak_Controller_V2_4_20220421.hex</file>
     </fileset.package>
     <fileset.depfun>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\Connect_MotoTrak.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\Load_MotoTrak_Serial_Codes.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Behavior_Loop.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Check_For_Hit.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Close.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Controller_Update_EEPROM_Int2Float.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Controller_V1p4_Serial_Functions.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Controller_V1p4_Serial_Functions_Deprecated.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Controller_V2pX_Serial_Functions.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Controller_V2pX_Serial_Functions_Deprecated.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Default_Config.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Disable_All_Uicontrols.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Display_Trial_Results.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Edit_Booth.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Edit_Rat.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Enable_All_Uicontrols.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Enable_Controls_Outside_Session.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Identify_Device.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Idle.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Initialize_Trial_Plots.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Initialize_Trial_Signal.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Launch_Calibration.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Lever_Calibration.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Lever_Calibration_GUI.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Load_Config.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Load_Stage.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Main_Loop.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Make_GUI.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\Mototrak_Open_Configuration_Directory.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\Mototrak_Open_Error_Reports.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Open_Google_Spreadsheet.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Peak_Finder.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Pull_Calibration.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Pull_Calibration_GUI.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Read_Stages.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Reset_Trial_Data.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Reset_Trial_Plots.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Resize.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Save_Error_Report.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Score_Hit.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Select_Serial_Port.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Select_Serial_Port_Deprecated.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Send_Error_Report.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Set_Callbacks.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Set_Custom_Parameters.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Set_Datapath.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\Mototrak_Set_Error_Reporting.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Set_Stream_Params.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Set_Tone_Parameters.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Clock_Test.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Controls_Within_Session.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_IR_Bounds.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Monitor_Plots.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Monitor_Signal.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Threshold.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Trial_Plots.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Trial_Signal.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Upload_Controller_Sketch.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_Config.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_File_Header.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_Pause_Data.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_Trial_Data.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Behavioral Subfunctions\Disable_All_Uicontrols.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Behavioral Subfunctions\Enable_All_Uicontrols.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Behavioral Subfunctions\Vulintus_Send_Error_Report.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Behavioral Subfunctions\Vulintus_Set_AppData_Path.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Add_Msg.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\big_waitbar.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\boxsmooth.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Clear_Msg.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\cprintf.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\daycode.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Read_Google_Spreadsheet.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Replace_Msg.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\text2speech.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Vulintus_Read_TSV_File.m</file>
-      <file>G:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Vulintus_Write_TSV_File.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\Connect_MotoTrak.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\Load_MotoTrak_Serial_Codes.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Behavior_Loop.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Check_For_Hit.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Close.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Controller_Update_EEPROM_Int2Float.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Controller_V1p4_Serial_Functions.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Controller_V1p4_Serial_Functions_Deprecated.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Controller_V2pX_Serial_Functions.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Controller_V2pX_Serial_Functions_Deprecated.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Default_Config.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Disable_All_Uicontrols.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Display_Trial_Results.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Edit_Booth.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Edit_Rat.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Enable_All_Uicontrols.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Enable_Controls_Outside_Session.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Identify_Device.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Idle.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Initialize_Trial_Plots.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Initialize_Trial_Signal.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Launch_Calibration.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Lever_Calibration.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Lever_Calibration_GUI.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Load_Config.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Load_Stage.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Main_Loop.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Make_GUI.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\Mototrak_Open_Configuration_Directory.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\Mototrak_Open_Error_Reports.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Open_Google_Spreadsheet.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Peak_Finder.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Pull_Calibration.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Pull_Calibration_GUI.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Read_Stages.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Reset_Trial_Data.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Reset_Trial_Plots.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Resize.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Save_Error_Report.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Score_Hit.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Select_Serial_Port.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Select_Serial_Port_Deprecated.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Send_Error_Report.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Set_Callbacks.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Set_Custom_Parameters.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Set_Datapath.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\Mototrak_Set_Error_Reporting.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Set_Stream_Params.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Set_Tone_Parameters.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Clock_Test.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Controls_Within_Session.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_IR_Bounds.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Monitor_Plots.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Monitor_Signal.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Threshold.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Trial_Plots.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Update_Trial_Signal.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_Config.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_File_Header.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_Pause_Data.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\src\MotoTrak_Write_Trial_Data.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Behavioral Subfunctions\Disable_All_Uicontrols.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Behavioral Subfunctions\Enable_All_Uicontrols.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Behavioral Subfunctions\Vulintus_Send_Error_Report.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Behavioral Subfunctions\Vulintus_Set_AppData_Path.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Add_Msg.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\big_waitbar.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\boxsmooth.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Clear_Msg.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\cprintf.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\daycode.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Read_Google_Spreadsheet.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Replace_Msg.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\text2speech.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Vulintus_Read_TSV_File.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Vulintus_Write_TSV_File.m</file>
     </fileset.depfun>
     <build-deliverables>
       <file location="${PROJECT_ROOT}\for_testing" name="splash.png" optional="false">H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V1\compiled\for_testing\splash.png</file>
