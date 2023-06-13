@@ -9,6 +9,9 @@ function MotoTrak_Lever_Calibration(varargin)
 %   UPDATE LOG:
 %   01/04/2019 - Drew Sloan - Function first created, adapted from
 %       MotoTrak_Pull_Calibration.m.
+%   12/09/2022 - Drew Sloan - Renamed the "Calibration_Loop" subfunction to
+%       "MotoTrak_Lever_Calibration_Loop" to avoid conflicts when collating
+%       MotoTrak scripts.
 %
 
 global run                                                                  %Create a global run variable.
@@ -51,8 +54,10 @@ set(h.editport,'string',h.ardy.port);                                       %Sho
 set(h.editbooth,'string',num2str(h.booth));                                 %Show the booth number on the GUI.
 
 %Set the properties of various pushbuttons.
-set(h.ratradio,'callback',{@RadioClick,h.mouseradio});                      %Set the callback for the rat lever select radio button.
-set(h.mouseradio,'callback',{@RadioClick,h.ratradio});                      %Set the callback for the mouse lever select radio button.
+set(h.ratradio,'callback',...
+    {@MotoTrak_Lever_Calibration_RadioClick,h.mouseradio});                 %Set the callback for the rat lever select radio button.
+set(h.mouseradio,'callback',...
+    {@MotoTrak_Lever_Calibration_RadioClick,h.ratradio});                   %Set the callback for the mouse lever select radio button.
 set(h.recordbutton,'callback','global run; run = 3.1;');                    %Set the callback for the calibration measuring button.
 set(h.savebutton,'callback','global run; run = 3.5;');                      %Set the callback for the calibration save button.
 set(h.mainfig,'CloseRequestFcn','global run; run = 1;');                    %Set the close request function for the main figure.
@@ -76,9 +81,9 @@ if h.slope == 0                                                             %If 
     h.slope = 1;                                                            %Set the slope to 1.
 end
 set(h.editslope,'string',num2str(h.slope,'%1.3f'),...
-    'callback',@EditSlope);                                                 %Show the slope in the slope editbox.
+    'callback',@MotoTrak_Lever_Calibration_EditSlope);                      %Show the slope in the slope editbox.
 set(h.editbaseline,'string',num2str(h.baseline,'%1.0f'),...
-    'callback',@EditBaseline);                                              %Show the baseline in the baseline editbox.
+    'callback',@MotoTrak_Lever_Calibration_EditBaseline);                   %Show the baseline in the baseline editbox.
 if h.lever_range == 5                                                       %If the lever range is 5 degrees...
     set(h.ratradio,'value',0);                                              %Set the rat radiobutton value to zero.
     set(h.mouseradio,'value',1);                                            %Set the mouse radiobutton value to one.
@@ -87,14 +92,14 @@ else                                                                        %Oth
     set(h.mouseradio,'value',0);                                            %Set the mouse radiobutton value to zero.
 end
 
-Calibration_Loop(h);                                                        %Run the calibration testing/setting loop.
+MotoTrak_Lever_Calibration_Loop(h);                                         %Run the calibration testing/setting loop.
 
 
 %% This subfunction loops to show the streaming lever press signal.
-function Calibration_Loop(h)
+function MotoTrak_Lever_Calibration_Loop(h)
 global run                                                                  %Create a global run variable.
 signal = zeros(500,1);                                                      %Create a signal buffer.
-h = MakePlot(h,signal);                                                     %Call the subfunction to create the plots.
+h = MotoTrak_Lever_Calibration_MakePlot(h,signal);                                                     %Call the subfunction to create the plots.
 temp = get(h.ratradio,'value');                                             %Grab the current value of the rat radio button.
 if temp == 1                                                                %If the rat radio button is selected...
     minmax_y = [0, 11];                                                     %Set the maximum value to 11 degrees.
@@ -312,7 +317,7 @@ delete(h.mainfig);                                                          %Del
     
     
 %% This subfunction creates the plots in the calibration and streaming axes.
-function h = MakePlot(h,buffer)
+function h = MotoTrak_Lever_Calibration_MakePlot(h,buffer)
 h.stream_plot = area(1:length(buffer),buffer,'linewidth',2,...
     'facecolor',[0.5 0.5 1],'parent',h.stream_ax);                          %Create an areaseries plot in the stream axes.
 % set(h.stream_ax,'ylim',[0,800],'xlim',[1,length(buffer)]);                  %Set the x- and y-axis limits of the stream axes.
@@ -321,14 +326,14 @@ h.stream_plot = area(1:length(buffer),buffer,'linewidth',2,...
 
 
 %% This function executes when the user presses either of the rat/mouse lever radiobuttons.
-function RadioClick(hObject,~,disable_h)
+function MotoTrak_Lever_Calibration_RadioClick(~,~,disable_h)
 global run                                                                  %Create a global run variable.
 set(disable_h,'value',0);                                                   %Uncheck the opposite radiobutton.
 run = 3.3;                                                                  %Set the run variable to 3.3 to reset the y-limits on the streaming plot.
 
 
 %% This function executes when the user modifies the text in the slope editbox.
-function EditSlope(hObject,~)
+function MotoTrak_Lever_Calibration_EditSlope(hObject,~)
 global run                                                                  %Create a global run variable.
 h = guidata(hObject);                                                       %Grab the handles structure from the GUI.
 temp = get(hObject,'string');                                               %Grab the string from the slope editbox.
@@ -342,7 +347,7 @@ set(hObject,'string',num2str(h.slope,'%1.3f'));                             %Res
 
 
 %% This function executes when the user modifies the text in the baseline editbox.
-function EditBaseline(hObject,~)
+function MotoTrak_Lever_Calibration_EditBaseline(hObject,~)
 global run                                                                  %Create a global run variable.
 h = guidata(hObject);                                                       %Grab the handles structure from the GUI.
 temp = get(hObject,'string');                                               %Grab the string from the baseline editbox.

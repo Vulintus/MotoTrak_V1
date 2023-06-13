@@ -32,7 +32,7 @@ function moto = MotoTrak_Controller_V2pX_Serial_Functions_Deprecated(moto)
 serialcon = moto.serialcon;                                                 %Grab the handle for the serial connection.
 serialcon.Timeout = 2;                                                      %Set the timeout for serial read/write operations, in seconds.
 serialcon.UserData = [2, 1, 2, 0, 0, 0, 0, 0];                              %Set the default number of inputs and the default stream order.
-serialcon.Userdata(end) = 1;                                                %Use the last element of the UserData as a debugging flag.
+serialcon.Userdata(end) = 0;                                                %Use the last element of the UserData as a debugging flag.
 
 if ~isfield(moto,'version')                                                 %If no version is yet specified...
     pause(0.1);                                                             %Pause for 100 milliseconds.
@@ -62,6 +62,7 @@ moto.set_booth = ...
     @(int)v2p0_write_eeprom_uint16_deprecated(serialcon,...
     s,s.EEPROM_BOOTH_NUM,int);                                              %Set the function for setting the booth number saved on the controller.
 moto.close_serialcon = @()v2p0_close_serialcon_deprecated(serialcon);       %Set the function for closing and deleting the serial connection.
+moto.debug_mode = @()v2p0_set_debug_mode(serialcon);                        %Set the function for enabling/disabling debug messages.
 
 %Motor manipulandi functions.
 moto.device = ...
@@ -684,6 +685,15 @@ delete(serialcon);                                                          %Del
 % %% This function is called whenever the serial line receiveds a line feed terminator.
 % function v2p0_serial_line_counter(serialcon,~,~)
 % serialcon.UserData(2) = serialcon.UserData(2) + 1;                          %Increment the line counter.
+
+
+%% This function enables/disables debugging messages.
+function v2p0_set_debug_mode(serialcon,debug_val)
+if debug_val == 0                                                           %If debug messages are to be turned off...
+    serialcon.Userdata(end) = 0;                                            %Set the debugging flag to 0.
+else                                                                        %Otherwise...
+    serialcon.Userdata(end) = 1;                                            %Set the debugging flag to 1.
+end
 
 
 %% This function prints debug message when the debugging flag is true.

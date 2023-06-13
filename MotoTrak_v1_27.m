@@ -1,6 +1,6 @@
 function MotoTrak_v1_27
 
-%Compiled: 04/29/2022, 09:39:26
+%Collated: 12/09/2022, 12:58:32
 
 MotoTrak_Startup;                                                           %Call the startup function.
 
@@ -113,22 +113,22 @@ MotoTrak_Disable_All_Uicontrols(handles.mainfig);                           %Dis
 if ~isfield(handles,'ardy')                                                 %If the Arduino isn't already connected in a pre-existing handles structure...
     handles.ardy = Connect_MotoTrak('listbox',handles.msgbox,...
         'useserialport',use_serialport);                                    %Connect to the Arduino, passing the listbox handle and the use_serialport flag. 
-    if ~isempty(handles.ardy) && handles.ardy.version < 240                 %If the Arduino sketch version is older than version 2.4...
-        str = sprintf(['The controller''s V%1.1f microcode is out of '...
-            'date.'],handles.ardy.version/100);                             %Create a string showing the current microcode version.
-        Add_Msg(handles.msgbox,str);                                        %Show the string in the messagebox.
-        delete(handles.ardy.serialcon);                                     %Close the serial connection with the Arduino.
-        try                                                                 %Attempt to run the program.
-            MotoTrak_Upload_Controller_Sketch(handles.ardy.port,...
-                handles.version, handles.msgbox);                           %Call the function to upload a sketch to the controller.
-        catch err                                                           %If any error occurs...
-            txt = MotoTrak_Save_Error_Report(handles,err);                  %Save a copy of the error in the AppData folder.
-            MotoTrak_Send_Error_Report(handles,handles.err_rcpt,txt);       %Send an error report to the specified recipient.        
-        end
-        Add_Msg(handles.msgbox,'Reconnecting...');                          %Show the string in the messagebox.
-        handles.ardy = Connect_MotoTrak('listbox',handles.msgbox,...
-            'useserialport',use_serialport);                                %Connect to the Arduino, passing the listbox handle and the use_serialport flag. 
-    end
+%     if ~isempty(handles.ardy) && handles.ardy.version < 240                 %If the Arduino sketch version is older than version 2.4...
+%         str = sprintf(['The controller''s V%1.1f microcode is out of '...
+%             'date.'],handles.ardy.version/100);                             %Create a string showing the current microcode version.
+%         Add_Msg(handles.msgbox,str);                                        %Show the string in the messagebox.
+%         delete(handles.ardy.serialcon);                                     %Close the serial connection with the Arduino.
+%         try                                                                 %Attempt to run the program.
+%             MotoTrak_Upload_Controller_Sketch(handles.ardy.port,...
+%                 handles.version, handles.msgbox);                           %Call the function to upload a sketch to the controller.
+%         catch err                                                           %If any error occurs...
+%             txt = MotoTrak_Save_Error_Report(handles,err);                  %Save a copy of the error in the AppData folder.
+%             MotoTrak_Send_Error_Report(handles,handles.err_rcpt,txt);       %Send an error report to the specified recipient.        
+%         end
+%         Add_Msg(handles.msgbox,'Reconnecting...');                          %Show the string in the messagebox.
+%         handles.ardy = Connect_MotoTrak('listbox',handles.msgbox,...
+%             'useserialport',use_serialport);                                %Connect to the Arduino, passing the listbox handle and the use_serialport flag. 
+%     end
     if isempty(handles.ardy)                                                %If the user cancelled connection to the Arduino...
         close(handles.mainfig);                                             %Close the GUI.
         clear('run');                                                       %Clear the global run variable from the workspace.
@@ -2678,7 +2678,7 @@ function moto = MotoTrak_Controller_V2pX_Serial_Functions_Deprecated(moto)
 serialcon = moto.serialcon;                                                 %Grab the handle for the serial connection.
 serialcon.Timeout = 2;                                                      %Set the timeout for serial read/write operations, in seconds.
 serialcon.UserData = [2, 1, 2, 0, 0, 0, 0, 0];                              %Set the default number of inputs and the default stream order.
-serialcon.Userdata(end) = 1;                                                %Use the last element of the UserData as a debugging flag.
+serialcon.Userdata(end) = 0;                                                %Use the last element of the UserData as a debugging flag.
 
 if ~isfield(moto,'version')                                                 %If no version is yet specified...
     pause(0.1);                                                             %Pause for 100 milliseconds.
@@ -2708,6 +2708,7 @@ moto.set_booth = ...
     @(int)v2p0_write_eeprom_uint16_deprecated(serialcon,...
     s,s.EEPROM_BOOTH_NUM,int);                                              %Set the function for setting the booth number saved on the controller.
 moto.close_serialcon = @()v2p0_close_serialcon_deprecated(serialcon);       %Set the function for closing and deleting the serial connection.
+moto.debug_mode = @()v2p0_set_debug_mode(serialcon);                        %Set the function for enabling/disabling debug messages.
 
 %Motor manipulandi functions.
 moto.device = ...
@@ -3330,6 +3331,15 @@ delete(serialcon);                                                          %Del
 % %% This function is called whenever the serial line receiveds a line feed terminator.
 % function v2p0_serial_line_counter(serialcon,~,~)
 % serialcon.UserData(2) = serialcon.UserData(2) + 1;                          %Increment the line counter.
+
+
+%% This function enables/disables debugging messages.
+function v2p0_set_debug_mode(serialcon,debug_val)
+if debug_val == 0                                                           %If debug messages are to be turned off...
+    serialcon.Userdata(end) = 0;                                            %Set the debugging flag to 0.
+else                                                                        %Otherwise...
+    serialcon.Userdata(end) = 1;                                            %Set the debugging flag to 1.
+end
 
 
 %% This function prints debug message when the debugging flag is true.
@@ -4356,6 +4366,9 @@ function MotoTrak_Lever_Calibration(varargin)
 %   UPDATE LOG:
 %   01/04/2019 - Drew Sloan - Function first created, adapted from
 %       MotoTrak_Pull_Calibration.m.
+%   12/09/2022 - Drew Sloan - Renamed the "Calibration_Loop" subfunction to
+%       "MotoTrak_Lever_Calibration_Loop" to avoid conflicts when collating
+%       MotoTrak scripts.
 %
 
 global run                                                                  %Create a global run variable.
@@ -4398,8 +4411,10 @@ set(h.editport,'string',h.ardy.port);                                       %Sho
 set(h.editbooth,'string',num2str(h.booth));                                 %Show the booth number on the GUI.
 
 %Set the properties of various pushbuttons.
-set(h.ratradio,'callback',{@RadioClick,h.mouseradio});                      %Set the callback for the rat lever select radio button.
-set(h.mouseradio,'callback',{@RadioClick,h.ratradio});                      %Set the callback for the mouse lever select radio button.
+set(h.ratradio,'callback',...
+    {@MotoTrak_Lever_Calibration_RadioClick,h.mouseradio});                 %Set the callback for the rat lever select radio button.
+set(h.mouseradio,'callback',...
+    {@MotoTrak_Lever_Calibration_RadioClick,h.ratradio});                   %Set the callback for the mouse lever select radio button.
 set(h.recordbutton,'callback','global run; run = 3.1;');                    %Set the callback for the calibration measuring button.
 set(h.savebutton,'callback','global run; run = 3.5;');                      %Set the callback for the calibration save button.
 set(h.mainfig,'CloseRequestFcn','global run; run = 1;');                    %Set the close request function for the main figure.
@@ -4423,9 +4438,9 @@ if h.slope == 0                                                             %If 
     h.slope = 1;                                                            %Set the slope to 1.
 end
 set(h.editslope,'string',num2str(h.slope,'%1.3f'),...
-    'callback',@EditSlope);                                                 %Show the slope in the slope editbox.
+    'callback',@MotoTrak_Lever_Calibration_EditSlope);                      %Show the slope in the slope editbox.
 set(h.editbaseline,'string',num2str(h.baseline,'%1.0f'),...
-    'callback',@EditBaseline);                                              %Show the baseline in the baseline editbox.
+    'callback',@MotoTrak_Lever_Calibration_EditBaseline);                   %Show the baseline in the baseline editbox.
 if h.lever_range == 5                                                       %If the lever range is 5 degrees...
     set(h.ratradio,'value',0);                                              %Set the rat radiobutton value to zero.
     set(h.mouseradio,'value',1);                                            %Set the mouse radiobutton value to one.
@@ -4434,14 +4449,14 @@ else                                                                        %Oth
     set(h.mouseradio,'value',0);                                            %Set the mouse radiobutton value to zero.
 end
 
-Calibration_Loop(h);                                                        %Run the calibration testing/setting loop.
+MotoTrak_Lever_Calibration_Loop(h);                                         %Run the calibration testing/setting loop.
 
 
 %% This subfunction loops to show the streaming lever press signal.
-function Calibration_Loop(h)
+function MotoTrak_Lever_Calibration_Loop(h)
 global run                                                                  %Create a global run variable.
 signal = zeros(500,1);                                                      %Create a signal buffer.
-h = MakePlot(h,signal);                                                     %Call the subfunction to create the plots.
+h = MotoTrak_Lever_Calibration_MakePlot(h,signal);                                                     %Call the subfunction to create the plots.
 temp = get(h.ratradio,'value');                                             %Grab the current value of the rat radio button.
 if temp == 1                                                                %If the rat radio button is selected...
     minmax_y = [0, 11];                                                     %Set the maximum value to 11 degrees.
@@ -4659,7 +4674,7 @@ delete(h.mainfig);                                                          %Del
     
     
 %% This subfunction creates the plots in the calibration and streaming axes.
-function h = MakePlot(h,buffer)
+function h = MotoTrak_Lever_Calibration_MakePlot(h,buffer)
 h.stream_plot = area(1:length(buffer),buffer,'linewidth',2,...
     'facecolor',[0.5 0.5 1],'parent',h.stream_ax);                          %Create an areaseries plot in the stream axes.
 % set(h.stream_ax,'ylim',[0,800],'xlim',[1,length(buffer)]);                  %Set the x- and y-axis limits of the stream axes.
@@ -4668,14 +4683,14 @@ h.stream_plot = area(1:length(buffer),buffer,'linewidth',2,...
 
 
 %% This function executes when the user presses either of the rat/mouse lever radiobuttons.
-function RadioClick(hObject,~,disable_h)
+function MotoTrak_Lever_Calibration_RadioClick(~,~,disable_h)
 global run                                                                  %Create a global run variable.
 set(disable_h,'value',0);                                                   %Uncheck the opposite radiobutton.
 run = 3.3;                                                                  %Set the run variable to 3.3 to reset the y-limits on the streaming plot.
 
 
 %% This function executes when the user modifies the text in the slope editbox.
-function EditSlope(hObject,~)
+function MotoTrak_Lever_Calibration_EditSlope(hObject,~)
 global run                                                                  %Create a global run variable.
 h = guidata(hObject);                                                       %Grab the handles structure from the GUI.
 temp = get(hObject,'string');                                               %Grab the string from the slope editbox.
@@ -4689,7 +4704,7 @@ set(hObject,'string',num2str(h.slope,'%1.3f'));                             %Res
 
 
 %% This function executes when the user modifies the text in the baseline editbox.
-function EditBaseline(hObject,~)
+function MotoTrak_Lever_Calibration_EditBaseline(hObject,~)
 global run                                                                  %Create a global run variable.
 h = guidata(hObject);                                                       %Grab the handles structure from the GUI.
 temp = get(hObject,'string');                                               %Grab the string from the baseline editbox.
@@ -5585,6 +5600,9 @@ function MotoTrak_Pull_Calibration(varargin)
 %       to match those used in the MotoTrak main loop. Added varargin
 %       functionality to receive/send the handle for the MotoTrak serial
 %       connection.
+%   12/09/2022 - Drew Sloan - Renamed the "Calibration_Loop" subfunction to
+%       "MotoTrak_Lever_Calibration_Loop" to avoid conflicts when collating
+%       MotoTrak scripts.
 %
 
 global run                                                                  %Create a global run variable.
@@ -5628,7 +5646,7 @@ for w = [10,20,100,200]                                                     %Ste
     i = length(test_weights) - find(test_weights == w) + 1;                 %Find the button index for this weight.
     set(h.skipbutton(i),'string','SKIP','foregroundcolor',[0.5 0 0]);       %Set the button string to "SKIP".
 end
-set(h.weightbutton,'callback',@TestWeight);                                 %Set the callback for all test weight pushbuttons.
+set(h.weightbutton,'callback',@MotoTrak_Pull_Calibration_TestWeight);       %Set the callback for all test weight pushbuttons.
 set(h.editbooth,'callback',@MotoTrak_Edit_Booth);                           %Set the callback for the booth number editbox.
 set(h.skipbutton,'callback',@SkipVoice);                                    %Set the callback for the voice-guided calibration skip buttons.
 set(h.guidebutton,'callback',@GuidedCalibration);                           %Set the callback for the voice-guided calibration button.
@@ -5657,20 +5675,20 @@ else                                                                        %Oth
     h.slope = h.ardy.get_slope_float(6);                                    %Read in the slope value for the isometric pull handle loadcell.    
 end
 set(h.editslope,'string',num2str(h.slope,'%1.3f'),...
-    'callback',@EditSlope);                                                 %Show the slope in the slope editbox.
+    'callback',@MotoTrak_Pull_Calibration_EditSlope);                       %Show the slope in the slope editbox.
 set(h.editbaseline,'string',num2str(h.baseline,'%1.0f'),...
-    'callback',@EditBaseline);                                              %Show the baseline in the baseline editbox.
+    'callback',@MotoTrak_Pull_Calibration_EditBaseline);                    %Show the baseline in the baseline editbox.
 
-Calibration_Loop(h);                                                        %Run the calibration testing/setting loop.
+MotoTrak_Pull_Calibration_Loop(h);                                          %Run the calibration testing/setting loop.
 
 
 %% This subfunction loops to show real-time plots of incoming calibration signals.
-function Calibration_Loop(h)
+function MotoTrak_Pull_Calibration_Loop(h)
 global run                                                                  %Create a global run variable.
 global run_guide                                                            %Create a global variable to control running the voice-guided calibration.
 run_guide = 0;                                                              %Set the voice guide run variable to 0.
 signal = h.baseline*ones(500,1);                                            %Create a signal buffer.
-h = MakePlots(h,signal);                                                    %Call the subfunction to create the plots.
+h = MotoTrak_Pull_Calibration_MakePlots(h,signal);                          %Call the subfunction to create the plots.
 max_tick = 800;                                                             %Set the maximum tick value to 800.
 show_save = 0;                                                              %Create a timing variable for flashing a "Calibration Saved" message on the axes.
 h.ardy.clear();                                                             %Clear any residual values from the serial line.
@@ -5921,7 +5939,7 @@ delete(h.mainfig);                                                          %Del
 
 
 %% This subfunction creates the plots in the calibration and streaming axes.
-function h = MakePlots(h,buffer)
+function h = MotoTrak_Pull_Calibration_MakePlots(h,buffer)
 h.stream_plot = area(1:length(buffer),buffer,'linewidth',2,...
     'facecolor',[0.5 0.5 1],'parent',h.stream_ax);                          %Create an areaseries plot in the stream axes.
 set(h.stream_ax,'ylim',[0,800],'xlim',[1,length(buffer)]);                  %Set the x- and y-axis limits of the stream axes.
@@ -5961,14 +5979,14 @@ uistack(h.prev_legend,'bottom');                                            %Mov
 
 
 %% This function executes whenever the user presses one of the test weight pushbuttons.
-function TestWeight(hObject,~)
+function MotoTrak_Pull_Calibration_TestWeight(hObject,~)
 global run                                                                  %Create a global run variable.
 val = get(hObject,'UserData');                                              %Grab the test weight value from the button's 'UserData' property.
 run = 3.1 + (val/10000);                                                    %Set the run variable to the test weight value.
 
 
 %% This function executes when the user modifies the text in the slope editbox.
-function EditSlope(hObject,~)
+function MotoTrak_Pull_Calibration_EditSlope(hObject,~)
 global run                                                                  %Create a global run variable.
 h = guidata(hObject);                                                       %Grab the handles structure from the GUI.
 temp = get(hObject,'string');                                               %Grab the string from the slope editbox.
@@ -5982,7 +6000,7 @@ set(hObject,'string',num2str(h.slope,'%1.3f'));                             %Res
 
 
 %% This function executes when the user modifies the text in the baseline editbox.
-function EditBaseline(hObject,~)
+function MotoTrak_Pull_Calibration_EditBaseline(hObject,~)
 global run                                                                  %Create a global run variable.
 h = guidata(hObject);                                                       %Grab the handles structure from the GUI.
 temp = get(hObject,'string');                                               %Grab the string from the baseline editbox.
@@ -8306,99 +8324,6 @@ trial.cur_sample = trial.cur_sample + trial.N;                                  
 
 
 %% ***********************************************************************
-function MotoTrak_Upload_Controller_Sketch(port,ver,msgbox)
-
-%
-%MotoTrak_Upload_Controller_Sketch.m - Vulintus, Inc.
-%
-%   This function calls uploads a new sketch to the MotoTrak controller
-%   using the avrdude.exe program.
-%
-%   UPDATE LOG:
-%   04/27/2018 - Drew Sloan - First function implementation.
-%   04/29/2022 - Drew Sloan - Updated the expected path for *.hex files and
-%       added build dates to the file convention.
-%
-
-if isdeployed                                                               %If this is deployed code...
-    prog_path = 'C:\Program Files\Vulintus\MotoTrak\application';           %Set the expected path of the controller hex file program.
-else                                                                        %Otherwise, if the code isn't deployed...
-    [prog_path,~,~] = ...
-        fileparts(which('MotoTrak_Upload_Controller_Sketch.m'));            %Grab the location of the current sketch.    
-    if isempty(prog_path)                                                   %If no location was found for the current m-file...
-        temp = sprintf('%1.2f',ver);                                        %Convert the version number to a string.
-        temp(temp == '.') = 'p';                                            %Change the period to a "p";
-        temp = sprintf('MotoTrak_v%s.m',temp);                              %Construct the expected filename.
-        [prog_path,~,~] = fileparts(which(temp));                           %Check for the location of the collated MotoTrak m-file.
-        if exist(fullfile(prog_path,'resources'),'dir')                     %If there's a "resources" folder in this folder...
-            prog_path = fullfile(prog_path,'resources');                    %Set the expected path of the controller hex file program.
-        end
-    elseif endsWith(prog_path,'src')                                        %If the path ends in "src"...
-        [temp,~,~] = fileparts(prog_path);                                  %Drop down one folder level.  
-        if exist(fullfile(temp,'resources'),'dir')                          %If there's a "resources" folder in this folder...
-            prog_path = fullfile(temp,'resources');                         %Set the expected path of the controller hex file program.
-        end
-    end    
-end
-
-if ~exist([prog_path '\avrdude.exe'],'file') || ...
-        ~exist([prog_path '\avrdude.conf'],'file')                          %If avrdude.exe or it's configuration file aren't found...
-        warning([upper(mfilename) ':AvrdudeNotFound'],['The '...
-            '"avrdude.exe" program isn''t in the current directory!']);     %Show a warning.
-    return                                                                  %Skip execution of the function.
-end
-
-hex_files = dir([prog_path '\MotoTrak_Controller_V*.hex']);                 %Find all hex files in the path.
-if isempty(hex_files)                                                       %If no matching hex files were found...
-    warning([upper(mfilename) ':NoHexFilesFound'],['No MotoTrak '...
-        '*.hex files files were found in the current directory!']);         %Show a warning.
-    return                                                                  %Skip execution of the function.
-end
-
-for i = 1:length(hex_files)                                                 %Step through each hex file.
-    a = strfind(hex_files(i).name,'.hex');                                  %Find the start of the file extension.        
-    str = hex_files(i).name(22:a-10);                                       %Pull the version number out of the filename.
-    str(str == '_') = '.';                                                  %Replace all underscores with periods.
-    hex_files(i).ver = str2double(str);                                     %Convert the string to a number.
-    str = hex_files(i).name(a-8:a-1);                                       %Pull the build date out of the filename.
-    hex_files(i).build_date = datenum(str,'yyyymmdd');                      %Convert the string to a serial date number.
-end
-i = vertcat(hex_files.ver) == max(vertcat(hex_files.ver));                  %Identify the highest version.
-hex_files = hex_files(i);                                                   %Keep only the highest version.
-if numel(hex_files) > 1                                                     %If there's more than one build of the highest version....
-    [~,i] = max(vertcat(hex_files.build_date));                             %Find the newest build.
-    hex_files = hex_files(i);                                               %Keep only the highest version.
-end
-
-str = sprintf('Updating controller microcode to V%1.1f (%s)...',...
-    hex_files(1).ver,datestr(hex_files(1).build_date,'yyyy-mm-dd'));        %Create a message showing the new microcode version.
-Add_Msg(msgbox,str);                                                        %Show an "updating..." message in the messagebox.    
-
-%Build the command line call.
-cmd = ['"' prog_path '\avrdude" '...                                        %avrdude.exe location
-    '-C"' prog_path '\avrdude.conf" '...                                    %avrdude.conf location
-    '-patmega328p '...                                                      %microcontroller type
-    '-carduino '...                                                         %arduino programmer
-    '-P' port ' '...                                                        %port
-    '-b115200 '...                                                          %baud rate
-    '-D '...                                                                %disable erasing the chip
-    '-Uflash:w:"' prog_path '\' hex_files(1).name '":i'];                   %hex file name                             
-
-clc;                                                                        %Clear the command line.
-cprintf('*blue','\n%s\n',cmd);                                              %Print the command in bold green.
-[status, ~] = dos(cmd,'-echo');                                             %Execute the command in a dos prompt, showing the results.
-
-if status == 0                                                              %If the command was successful...
-    Add_Msg(msgbox,'Controller microcode successfully updated!');           %Show a success message in the messagebox.    
-else                                                                        %Otherwise...
-    Add_Msg(msgbox,'Controller microcode update failed!');                  %Show a failure message in the messagebox.    
-    Add_Msg(msgbox,'Reverting to existing controller microcode.');          %Show that we're reverting to the previous microcode.
-end
-
-pause(1);                                                                   %Pause for 1 second.
-
-
-%% ***********************************************************************
 function MotoTrak_Write_Config(variant,h,fields)
 
 %
@@ -8886,7 +8811,13 @@ elseif nargin == 3                                                          %Oth
     msgbox = varargin{3};                                                  %The listbox handle is the third input argument.
 end
 
-switch get(msgbox,'type')                                                   %Switch between the recognized components.
+if strcmpi(get(msgbox,'type'),'uicontrol')                                  %If the messagebox is a uicontrol...
+    msgbox_type = get(msgbox,'style');                                      %Grab the style property.
+else                                                                        %Otherwise...
+    msgbox_type = get(msgbox,'type');                                       %Grab the type property.
+end
+
+switch msgbox_type                                                          %Switch between the recognized components.
     
     case 'listbox'                                                          %If the messagebox is a listbox...
         set(msgbox,'string',{},...

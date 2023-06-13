@@ -21,7 +21,13 @@ elseif nargin == 3                                                          %Oth
     msgbox = varargin{3};                                                  %The listbox handle is the third input argument.
 end
 
-switch get(msgbox,'type')                                                   %Switch between the recognized components.
+if strcmpi(get(msgbox,'type'),'uicontrol')                                  %If the messagebox is a uicontrol...
+    msgbox_type = get(msgbox,'style');                                      %Grab the style property.
+else                                                                        %Otherwise...
+    msgbox_type = get(msgbox,'type');                                       %Grab the type property.
+end
+
+switch msgbox_type                                                          %Switch between the recognized components.
     
     case 'listbox'                                                          %If the messagebox is a listbox...
         set(msgbox,'string',{},...

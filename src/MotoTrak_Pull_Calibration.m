@@ -11,6 +11,9 @@ function MotoTrak_Pull_Calibration(varargin)
 %       to match those used in the MotoTrak main loop. Added varargin
 %       functionality to receive/send the handle for the MotoTrak serial
 %       connection.
+%   12/09/2022 - Drew Sloan - Renamed the "Calibration_Loop" subfunction to
+%       "MotoTrak_Lever_Calibration_Loop" to avoid conflicts when collating
+%       MotoTrak scripts.
 %
 
 global run                                                                  %Create a global run variable.
@@ -54,7 +57,7 @@ for w = [10,20,100,200]                                                     %Ste
     i = length(test_weights) - find(test_weights == w) + 1;                 %Find the button index for this weight.
     set(h.skipbutton(i),'string','SKIP','foregroundcolor',[0.5 0 0]);       %Set the button string to "SKIP".
 end
-set(h.weightbutton,'callback',@TestWeight);                                 %Set the callback for all test weight pushbuttons.
+set(h.weightbutton,'callback',@MotoTrak_Pull_Calibration_TestWeight);       %Set the callback for all test weight pushbuttons.
 set(h.editbooth,'callback',@MotoTrak_Edit_Booth);                           %Set the callback for the booth number editbox.
 set(h.skipbutton,'callback',@SkipVoice);                                    %Set the callback for the voice-guided calibration skip buttons.
 set(h.guidebutton,'callback',@GuidedCalibration);                           %Set the callback for the voice-guided calibration button.
@@ -83,20 +86,20 @@ else                                                                        %Oth
     h.slope = h.ardy.get_slope_float(6);                                    %Read in the slope value for the isometric pull handle loadcell.    
 end
 set(h.editslope,'string',num2str(h.slope,'%1.3f'),...
-    'callback',@EditSlope);                                                 %Show the slope in the slope editbox.
+    'callback',@MotoTrak_Pull_Calibration_EditSlope);                       %Show the slope in the slope editbox.
 set(h.editbaseline,'string',num2str(h.baseline,'%1.0f'),...
-    'callback',@EditBaseline);                                              %Show the baseline in the baseline editbox.
+    'callback',@MotoTrak_Pull_Calibration_EditBaseline);                    %Show the baseline in the baseline editbox.
 
-Calibration_Loop(h);                                                        %Run the calibration testing/setting loop.
+MotoTrak_Pull_Calibration_Loop(h);                                          %Run the calibration testing/setting loop.
 
 
 %% This subfunction loops to show real-time plots of incoming calibration signals.
-function Calibration_Loop(h)
+function MotoTrak_Pull_Calibration_Loop(h)
 global run                                                                  %Create a global run variable.
 global run_guide                                                            %Create a global variable to control running the voice-guided calibration.
 run_guide = 0;                                                              %Set the voice guide run variable to 0.
 signal = h.baseline*ones(500,1);                                            %Create a signal buffer.
-h = MakePlots(h,signal);                                                    %Call the subfunction to create the plots.
+h = MotoTrak_Pull_Calibration_MakePlots(h,signal);                          %Call the subfunction to create the plots.
 max_tick = 800;                                                             %Set the maximum tick value to 800.
 show_save = 0;                                                              %Create a timing variable for flashing a "Calibration Saved" message on the axes.
 h.ardy.clear();                                                             %Clear any residual values from the serial line.
@@ -347,7 +350,7 @@ delete(h.mainfig);                                                          %Del
 
 
 %% This subfunction creates the plots in the calibration and streaming axes.
-function h = MakePlots(h,buffer)
+function h = MotoTrak_Pull_Calibration_MakePlots(h,buffer)
 h.stream_plot = area(1:length(buffer),buffer,'linewidth',2,...
     'facecolor',[0.5 0.5 1],'parent',h.stream_ax);                          %Create an areaseries plot in the stream axes.
 set(h.stream_ax,'ylim',[0,800],'xlim',[1,length(buffer)]);                  %Set the x- and y-axis limits of the stream axes.
@@ -387,14 +390,14 @@ uistack(h.prev_legend,'bottom');                                            %Mov
 
 
 %% This function executes whenever the user presses one of the test weight pushbuttons.
-function TestWeight(hObject,~)
+function MotoTrak_Pull_Calibration_TestWeight(hObject,~)
 global run                                                                  %Create a global run variable.
 val = get(hObject,'UserData');                                              %Grab the test weight value from the button's 'UserData' property.
 run = 3.1 + (val/10000);                                                    %Set the run variable to the test weight value.
 
 
 %% This function executes when the user modifies the text in the slope editbox.
-function EditSlope(hObject,~)
+function MotoTrak_Pull_Calibration_EditSlope(hObject,~)
 global run                                                                  %Create a global run variable.
 h = guidata(hObject);                                                       %Grab the handles structure from the GUI.
 temp = get(hObject,'string');                                               %Grab the string from the slope editbox.
@@ -408,7 +411,7 @@ set(hObject,'string',num2str(h.slope,'%1.3f'));                             %Res
 
 
 %% This function executes when the user modifies the text in the baseline editbox.
-function EditBaseline(hObject,~)
+function MotoTrak_Pull_Calibration_EditBaseline(hObject,~)
 global run                                                                  %Create a global run variable.
 h = guidata(hObject);                                                       %Grab the handles structure from the GUI.
 temp = get(hObject,'string');                                               %Grab the string from the baseline editbox.
