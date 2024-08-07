@@ -197,8 +197,12 @@ end
 
 if numbytes > 0                                                             %If there's a reply on the serial line.
     if datenum(version('-date')) >= 737685 && use_serialport == 1           %If the version is 2019b or newer...    
+        write(serialcon,'g0','char');                                       %Send the check status code to the Arduino board.
+        pause(0.1);                                                         %Pause for 100 milliseconds.
         flush(serialcon);                                                   %Clear the input and output buffers.
     else                                                                    %Otherwise, for older versions...
+        fwrite(serialcon,'g0','uchar');                                     %Send the check status code to the Arduino board.
+        pause(0.1);                                                         %Pause for 100 milliseconds.
         temp = fscanf(serialcon,'%c',serialcon.BytesAvailable);             %Read the reply into a temporary matrix.
     end    
 end
